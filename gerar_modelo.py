@@ -7,7 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 import soundfile as sf
 import torchaudio  # só para resample se necessário
 
-# --- 1️ Dataset personalizado
+# Dataset personalizado
 class CoughDataset(Dataset):
     def __init__(self, root_dir):
         self.files = []
@@ -47,7 +47,7 @@ class CoughDataset(Dataset):
 
         return wav.squeeze(0), self.labels[idx]
 
-# --- 2️ Modelo ---
+# Modelo de áudio de 20s, 16.000 Hz * 20 = 320000 Hz
 class AudioModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -56,7 +56,7 @@ class AudioModel(nn.Module):
     def forward(self, x):
         return self.fc(x)
 
-# --- 3️ Treinamento ---
+# Treinamento do modelo
 def train_model(data_dir, epochs=5, batch_size=2, lr=0.001):
     dataset = CoughDataset(data_dir)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
