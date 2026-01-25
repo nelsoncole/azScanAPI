@@ -1,5 +1,4 @@
 # pip install torch numpy soundfile torchaudio
-
 import os
 import torch
 import torch.nn as nn
@@ -49,7 +48,7 @@ class CoughDataset(Dataset):
         return wav.squeeze(0), self.labels[idx]
 
 # --- 2️ Modelo ---
-class TestAudioModel20s(nn.Module):
+class AudioModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.fc = nn.Linear(320000, 3)  # 3 classes
@@ -62,7 +61,7 @@ def train_model(data_dir, epochs=5, batch_size=2, lr=0.001):
     dataset = CoughDataset(data_dir)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-    model = TestAudioModel20s()
+    model = AudioModel()
     model.train()
 
     criterion = nn.CrossEntropyLoss()

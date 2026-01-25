@@ -11,8 +11,8 @@ import base64
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-# --- Modelo igual ao do treinamento ---
-class TestAudioModel20s(nn.Module):
+# Modelo de áudio de 20s, 16.000 Hz * 20 = 320000 Hz
+class AudioModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.fc = nn.Linear(320000, 3)
@@ -20,18 +20,18 @@ class TestAudioModel20s(nn.Module):
     def forward(self, x):
         return self.fc(x)
 
-# --- Carregar modelo treinado ---
-model = TestAudioModel20s()
+# Carregar modelo treinado
+model = AudioModel()
 model.load_state_dict(torch.load("model_20s.pt", map_location="cpu"))
 model.eval()
 
 app = FastAPI()
 
-class PredictRequest(BaseModel):
+class PreverRequest(BaseModel):
     audio_base64: str
 
 @app.post("/prever")
-def predict(req: PredictRequest):
+def prever(req: PreverRequest):
     # Converter base64 para numpy
     audio_bytes = base64.b64decode(req.audio_base64)
     audio_np = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32) / 32768.0
